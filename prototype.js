@@ -127,21 +127,42 @@ var createLabels = function(lengths,target)
         .append("g")
         .classed("labels", true)
     
-    labels.append("text")
+    labels.append("g")
         .attr("id", "graphtitle")
-        .text("Income")
+        .attr("transform", "translate("+(lengths.graph.width/2+lengths.margins.left)+","+lengths.margins.top+")")
+        .append("text")
+        .text("Income Levels Based on Assessments")
         .classed("title", true)
         .attr("text-anchor", "middle")
-        .attr("transform", "rotate(90)")
     
     labels.append("g")
+        .attr("id", "leftLabel")
         .attr("transform","translate(20,"+ 
               (lengths.margins.top+(lengths.graph.height/2))+")")
         .append("text")
-        .text("S")
+        .text("Percentage of Correctness on Big Three Financial Questions")
         .classed("label",true)
         .attr("text-anchor","middle")
         .attr("transform","rotate(90)")
+        .attr("stroke", "green")
+    
+    labels.append("g")
+        .attr("id", "rightLabel")
+        .attr("transform", "translate("+(lengths.margins.left+lengths.graph.width+55)+","+(lengths.graph.height/2+15)+")")
+        .append("text")
+        .text("Average Personal Rating on Handling Financial Matters")
+        .classed("label",true)
+        .attr("text-anchor","middle")
+        .attr("transform","rotate(270)")
+        .attr("stroke", "orange")
+    
+    labels.append("g")
+        .attr("id", "xAxisLabel")
+        .attr("transform", "translate("+(lengths.graph.width/2+lengths.margins.left)+","+(lengths.graph.height+lengths.margins.top+lengths.margins.bottom)+")")
+        .append("text")
+        .text("Income Levels")
+        .classed("title", true)
+        .attr("text-anchor", "middle")
 };
     
 var initAxes = function(lengths, target)
@@ -215,6 +236,7 @@ var initGraph = function(target, money)
     
     initAxes(lengths, target);
     updateGraph(target, money, lengths);
+    createLabels(lengths,target);
 };
 
 var Incomes = function(money)
