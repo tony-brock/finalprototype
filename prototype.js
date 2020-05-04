@@ -2,30 +2,49 @@ var dur = 500;
 
 var RecalculateScales = function(money, lengths)
 {
+//make Incomes an array
 var getIncomes = function(entry)
     {
         return entry.Income
     };
-var Incomes = money.map(getIncomes)
-console.log("Incomes", Incomes)
+var Incomes = money.map(getIncomes);
+console.log("Incomes", Incomes);
+//make scores an array   
+var getThree = function(entry)
+    {
+        return entry.Big_Three
+    };
+var big_Three = money.map(getThree);
+console.log("Big Three", big_Three);
+//make self rates an array
+var getFinance = function(entry)
+    {
+        return entry.Financial_Matters
+    };
+var finance = money.map(getFinance);
+console.log("Financial Matters Scores", finance);
+    
     var xBase = d3.scaleBand()
-            .domain(money.Incomes)
+            .domain(Incomes)
             .range([0,lengths.graph.width])
             .paddingInner(.5);
+    
     var xBars = d3.scaleBand()
-            .domain(money.Big_Three,money.Financial_Matters)
-            .range()
+            .domain(big_Three,finance)
+            .range([0,(lengths.graph.width/8)])
+    
     var y1 = d3.scaleLinear()
             .domain([0,1])
-            .range([lengths.graph.height,0])
-    var y2 = de.scaleLinear()
+            .range([lengths.graph.height,0]);
+    
+    var y2 = d3.scaleLinear()
             .domain([1,7])
             .range([lengths.graph.height,0]);
     
     return {xBase:xBase, xBars:xBars, y1:y1, y2:y2};
 };
 
-var updateGraph = function(target,money,lengths)
+var updateGraph = function(target,money,lengths, Incomes, big_Three, Finance)
 {
     var scales = RecalculateScales(money,lengths);
     var xBase = scales.xBase;
@@ -51,22 +70,32 @@ var updateGraph = function(target,money,lengths)
         .selectAll("rect")
         .transition()
         .duration(500)
-        .attr("x", function(entry)
-        {
-            return xBars(entry.Income);
-        })
-        .attr("y", function(entry)
-        {
-            return y1(entry.Big_Three);
-        })
+        .attr("x", xBars(big_Three))
+        .attr("y", y1(big_Three))
         .attr("width", xBars.bandwidth)
         .attr("height", function(entry)
         {
-            return lengths.graph.heigh - y1(entry.Big_Three);
+            return lengths.graph.height - y1(entry.Big_Three);
         })
         .attr("rx", 2)
         .attr("ry", 2)
-        .attr("fill", green)   
+        .attr("fill", "green") 
+    
+    d3.select(target)
+        .select(".graph")
+        .selectAll("rect")
+        .transition()
+        .duration(500)
+        .attr("x", xBars(Finance))
+        .attr("y", y2(Finance))
+        .attr("width", xBars.bandwidth)
+        .attr("height", function(entry)
+        {
+            return lengths.graph.height - y1(entry.Big_Three);
+        })
+        .attr("rx", 2)
+        .attr("ry", 2)
+        .attr("fill", "orange") 
 };
 
 var createLabels = function(lengths,target)
@@ -95,7 +124,7 @@ var initAxes = function(lengths, target)
              +(lengths.margins.top+lengths.graph.height)+")")
     
     axes.append("g")
-        .attr("id","yAxis")
+        .attr("id","leftAxis")
         .attr("transform","translate("+(lengths.margins.left-5)+","
              +(lengths.margins.top)+")")
     
@@ -128,7 +157,7 @@ var updateAxes = function(target,xBase,y1,y2)
 
 var initGraph = function(target, money)
 {
-    var screen = {width:500, height:400}
+    var screen = {width:900, height:400}
     var margins = {top:25, bottom:40, left:75, right:75}
     var graph = 
     {
