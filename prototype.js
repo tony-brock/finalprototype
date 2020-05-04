@@ -77,7 +77,7 @@ var createLabels = function(lengths,target)
         .attr("transform", "rotate(90)")
 };
     
-var initAxes = function(lengths, target, xBase, y1, y2)
+var initAxes = function(lengths, target)
 {
     var axes = d3.select(target)
         .append("g")
@@ -145,7 +145,7 @@ var initGraph = function(target, money)
         .attr("transform", "translate("+margins.left+","+margins.top+")");
     
     initAxes(lengths, target);
-    updateGraph(lengths, target, money);
+    updateGraph(target, money, lengths);
 };
 
 var Incomes = function(money)
