@@ -2,8 +2,14 @@ var dur = 500;
 
 var RecalculateScales = function(money, lengths)
 {
+var getIncomes = function(entry)
+    {
+        return entry.Income
+    };
+var Incomes = money.map(getIncomes)
+console.log("Incomes", Incomes)
     var xBase = d3.scaleBand()
-            .domain(money.Income)
+            .domain(money.Incomes)
             .range([0,lengths.graph.width])
             .paddingInner(.5);
     var xBars = d3.scaleBand()
